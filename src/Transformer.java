@@ -57,20 +57,20 @@ public class Transformer {
             }
 
             if (node.type.equals("CallExpression")) {
-                Node expression = new Node("CallExpression");
-                expression.callee = new Node("Identifier") {{
+                Node expressionX = new Node("CallExpression");
+                expressionX.callee = new Node("Identifier") {{
                     name = node.name;
                 }};
-                expression.arguments = new ArrayList<>();
-                node._context = expression.arguments;
+                expressionX.arguments = new ArrayList<>();
+                node._context = expressionX.arguments;
 
                 if (!parent.type.equals("CallExpression")) {
-                    expression = new Node("ExpressionStatement") {{
-                        this.expression = expression;
-                    }};
+                    parent._context.add(new Node("ExpressionStatement") {{
+                        expression = expressionX;
+                    }});
+                } else {
+                	parent._context.add(expressionX);
                 }
-
-                parent._context.add(expression);
             }
         }
 
