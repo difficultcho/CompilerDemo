@@ -67,7 +67,7 @@ public class Transformer {
             if (node.type.equals("CallExpression")) {
                 Node expr = new Node("CallExpression");
                 
-                // 为目标语言生成准备
+                // 与目标语言生成方式配套
                 expr.callee = new Node("Identifier") {{
                     name = node.name;
                 }};
