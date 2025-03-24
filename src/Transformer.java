@@ -15,15 +15,21 @@ public class Transformer {
         return newAst;
     }
 
+    /**
+     * 核心逻辑：
+     * 对每个 AST 节点，一进一出，期间对 program 和 expression 节点依次 traverse 其内容
+     * 一进：
+     * 一出：
+     */
     private void traverse(Node node, Node parent, Visitor visitor) {
         visitor.enter(node, parent);
 
         switch (node.type) {
             case "Program":
-                traverseArray(node.body, node, visitor);
+                traverseArray(node.body, node, visitor); // program 的内容在 body 上
                 break;
             case "CallExpression":
-                traverseArray(node.params, node, visitor);
+                traverseArray(node.params, node, visitor); // expression 的内容在 params 上
                 break;
             case "NumberLiteral":
             case "StringLiteral":
@@ -45,31 +51,40 @@ public class Transformer {
 
         public void enter(Node node, Node parent) {
             if (node.type.equals("NumberLiteral")) {
+            	// 当前节点是数值，则其父节点的对偶节点（新 AST 节点）上，新增一个数值节点
                 parent._context.add(new Node("NumberLiteral") {{
                     value = node.value;
                 }});
             }
 
             if (node.type.equals("StringLiteral")) {
+            	// 当前节点是 String，则其父节点的对偶节点（新 AST 节点）上，新增一个 String 节点
                 parent._context.add(new Node("StringLiteral") {{
                     value = node.value;
                 }});
             }
 
             if (node.type.equals("CallExpression")) {
-                Node expressionX = new Node("CallExpression");
-                expressionX.callee = new Node("Identifier") {{
+                Node expr = new Node("CallExpression");
+                
+                // 为目标语言生成准备
+                expr.callee = new Node("Identifier") {{
                     name = node.name;
                 }};
-                expressionX.arguments = new ArrayList<>();
-                node._context = expressionX.arguments;
+                expr.arguments = new ArrayList<>();
+                node._context = expr.arguments;
 
-                if (!parent.type.equals("CallExpression")) {
-                    parent._context.add(new Node("ExpressionStatement") {{
-                        expression = expressionX;
-                    }});
+                // 
+                if (parent.type.equals("CallExpression")) {
+                	// 当前节点是 expression，上级节点也是 expression 时，
+                	// 上级节点的对偶节点的上下文里增添一个当前的 expression 节点
+                	parent._context.add(expr);
                 } else {
-                	parent._context.add(expressionX);
+                	// 当前节点是 expression，而上级节点不是 expression 时，
+                	// 上级节点的对偶节点的上下文里增添一个【包装后的】当前的 expression 节点
+                	parent._context.add(new Node("ExpressionStatement") {{
+                        expression = expr;
+                    }});
                 }
             }
         }
@@ -77,5 +92,6 @@ public class Transformer {
         public void exit(Node node, Node parent) {
 
         }
+        
     }
 }

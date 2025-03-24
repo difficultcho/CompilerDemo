@@ -34,6 +34,12 @@ public class Parser {
             return new Node("StringLiteral", token.value);
         }
 
+        /**
+         * 仅针对 demo 的 处理逻辑：
+         * 括号意味着表达式，
+         * 表达式名为括号下一个 token，
+         * 表达式参数为随后所有的 token，直到括号关闭
+         */
         if (token.type.equals("parenthesis") && token.value.equals("(")) {
             current++;
             token = tokens.get(current);

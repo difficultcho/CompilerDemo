@@ -1,6 +1,12 @@
 /**
  * @author mzhang27
  * @since 2025/3/13
+ * 
+ * 写这个类，要梳理清 GIC 语法
+ * 
+ * 当前示例处理：
+ * 1)括号对儿、2)正整数、3)字符串内容、4)变量名/函数名
+ * 
  */
 import java.util.ArrayList;
 import java.util.List;
