@@ -64,6 +64,9 @@ public class Transformer {
                 }});
             }
 
+            /**
+             * 存疑，需配合 generator 理解
+             */
             if (node.type.equals("CallExpression")) {
                 Node expr = new Node("CallExpression");
                 
@@ -74,7 +77,6 @@ public class Transformer {
                 expr.arguments = new ArrayList<>();
                 node._context = expr.arguments;
 
-                // 
                 if (parent.type.equals("CallExpression")) {
                 	// 当前节点是 expression，上级节点也是 expression 时，
                 	// 上级节点的对偶节点的上下文里增添一个当前的 expression 节点
